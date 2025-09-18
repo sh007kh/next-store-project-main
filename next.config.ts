@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         hostname: "images.pexels.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "emakiinvvsjnmuydrwxo.supabase.co",
+        pathname: "/**",
+      },
     ],
     // domains: ["images.pexels.com"],
   },
