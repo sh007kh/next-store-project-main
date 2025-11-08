@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         hostname: "emakiinvvsjnmuydrwxo.supabase.co",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        pathname: "/**",
+      },
     ],
     // domains: ["images.pexels.com"],
   },
