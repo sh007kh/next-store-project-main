@@ -41,7 +41,6 @@ async function SingleProductPage({
           <div className="flex gap-x-8 items-center">
             <h1 className="capitalize text-3xl font-bold">{name}</h1>
             <div className="flex gap-x-8 items-center">
-              <h1 className="capitalize text-3xl font-bold">{name}</h1>
               <div className="flex items-center gap-x-2">
                 <FavoriteToggleButton productId={id} />
                 <ShareButton name={product.name} productId={id} />
