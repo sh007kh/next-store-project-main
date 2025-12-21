@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client" // or `prisma-client-js`
-  output          = "../generated/prisma"
+  provider        = "prisma-client-js"
   engineType      = "client" // enable Prisma ORM without Rust
 }
 
