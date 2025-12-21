@@ -1,13 +1,9 @@
 import "dotenv/config";
-import { PrismaClient } from "@prisma/client";
 // const { PrismaClient } = require("@prisma/client");
-import products from "./products.json" with { type: "json" };
-// const products = require("./products.json");
-import { PrismaPg } from "@prisma/adapter-pg";
-// import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "../generated/prisma/client";
+const products = require("./products.json");
+const prisma = new PrismaClient();
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-const prisma = new PrismaClient({ adapter });
 async function main() {
   for (const product of products) {
     await prisma.product.create({
