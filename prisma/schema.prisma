@@ -7,6 +7,14 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Size {
+  SMALL
+  MEDIUM
+  LARGE
+  XLARGE
+  XXLARGE
+}
+
 model Product {
   id           String     @id @default(uuid())
   name        String
@@ -15,6 +23,7 @@ model Product {
   featured   Boolean
   image       String
   price       Int
+  size        Size       @default(MEDIUM)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   clerkId  String
@@ -68,6 +77,7 @@ model CartItem {
   cart     Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId   String
   amount  Int
+  size    Size     @default(MEDIUM)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

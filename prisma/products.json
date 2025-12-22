@@ -6,6 +6,7 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/943150/pexels-photo-943150.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 100,
+    "size": "MEDIUM",
     "clerkId": "clerkId"
   },
   {
@@ -15,6 +16,7 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/5705090/pexels-photo-5705090.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 200,
+    "size": "LARGE",
     "clerkId": "clerkId"
   },
   {
@@ -24,6 +26,7 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/1034584/pexels-photo-1034584.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 300,
+    "size": "XLARGE",
     "clerkId": "clerkId"
   },
   {
@@ -33,6 +36,7 @@
     "featured": false,
     "image": "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 400,
+    "size": "SMALL",
     "clerkId": "clerkId"
   }
 ]

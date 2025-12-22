@@ -14,6 +14,7 @@ export const productSchema = z.object({
   price: z.coerce.number().int().min(0, {
     message: "price must be a positive number.",
   }),
+  size: z.enum(["SMALL", "MEDIUM", "LARGE", "XLARGE", "XXLARGE"]),
   description: z.string().refine(
     (description) => {
       const wordCount = description.split(" ").length;

@@ -12,7 +12,7 @@ import {
 import { deleteImage, uploadImage } from "./supabase";
 import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
-import { Cart } from "@prisma/client";
+import { Cart, Size } from "@prisma/client";
 
 export const fetchFeaturedProducts = async () => {
   const products = await db.product.findMany({
@@ -468,15 +468,18 @@ const updateOrCreateCartItem = async ({
   productId,
   cartId,
   amount,
+  size,
 }: {
   productId: string;
   cartId: string;
   amount: number;
+  size: string;
 }) => {
   let cartItem = await db.cartItem.findFirst({
     where: {
       productId,
       cartId,
+      size: size as Size,
     },
   });
 
@@ -491,7 +494,7 @@ const updateOrCreateCartItem = async ({
     });
   } else {
     cartItem = await db.cartItem.create({
-      data: { amount, productId, cartId },
+      data: { amount, productId, cartId, size: size as Size },
     });
   }
 };
@@ -541,9 +544,10 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
   try {
     const productId = formData.get("productId") as string;
     const amount = Number(formData.get("amount"));
+    const size = formData.get("size") as string;
     await fetchProduct(productId);
     const cart = await fetchOrCreateCart({ userId: user.id });
-    await updateOrCreateCartItem({ productId, cartId: cart.id, amount });
+    await updateOrCreateCartItem({ productId, cartId: cart.id, amount, size });
     await updateCart(cart);
   } catch (error) {
     return renderError(error);

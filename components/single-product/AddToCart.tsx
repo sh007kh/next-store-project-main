@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import SelectProductAmount from "./SelectProductAmount";
+import SelectProductSize from "./SelectProductSize";
 import { Mode } from "./SelectProductAmount";
 import FormContainer from "../form/FormContainer";
 import { SubmitButton } from "../form/Buttons";
@@ -10,18 +11,23 @@ import { ProductSignInButton } from "../form/Buttons";
 
 function AddToCart({ productId }: { productId: string }) {
   const [amount, setAmount] = useState(1);
+  const [size, setSize] = useState("MEDIUM");
   const { userId } = useAuth();
   return (
     <div className="mt-4">
-      <SelectProductAmount
-        mode={Mode.SingleProduct}
-        amount={amount}
-        setAmount={setAmount}
-      />
+      <SelectProductSize size={size} setSize={setSize} />
+      <div className="mt-4">
+        <SelectProductAmount
+          mode={Mode.SingleProduct}
+          amount={amount}
+          setAmount={setAmount}
+        />
+      </div>
       {userId ? (
         <FormContainer action={addToCartAction}>
           <input type="hidden" name="productId" value={productId} />
           <input type="hidden" name="amount" value={amount} />
+          <input type="hidden" name="size" value={size} />
           <SubmitButton text="add to cart" size="default" className="mt-8" />
         </FormContainer>
       ) : (

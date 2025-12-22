@@ -7,6 +7,7 @@ import PriceInput from "@/components/form/PriceInput";
 import TextAreaInput from "@/components/form/TextAreaInput";
 import { faker } from "@faker-js/faker";
 import CheckboxInput from "@/components/form/CheckBoxInput";
+import SizeInput from "@/components/form/SizeInput";
 
 function CreateProduct() {
   const name = faker.commerce.productName();
@@ -33,6 +34,7 @@ function CreateProduct() {
               defaultValue={company}
             />
             <PriceInput />
+            <SizeInput />
             <ImageInput />
           </div>
           <TextAreaInput
