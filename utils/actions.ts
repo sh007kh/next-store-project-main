@@ -12,7 +12,7 @@ import {
 import { deleteImage, uploadImage } from "./supabase";
 import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
-import { Cart, Size } from "@prisma/client";
+import { Cart, Size, Color } from "@prisma/client";
 
 export const fetchFeaturedProducts = async () => {
   const products = await db.product.findMany({
@@ -41,6 +41,9 @@ export const fetchSingleProduct = async (productId: string) => {
   const product = await db.product.findUnique({
     where: {
       id: productId,
+    },
+    include: {
+      variants: true,
     },
   });
   if (!product) {
@@ -105,16 +108,26 @@ export const createProductAction = async (
 
     const fullPath = await uploadImage(validatedFile.data!.image);
 
-    await db.product.create({
+    const { size, ...productData } = validatedFields.data!;
+
+    const product = await db.product.create({
       data: {
-        ...(validatedFields.data as typeof validatedFields.data & {
-          name: string;
-          company: string;
-          price: number;
-          description: string;
-        }),
+        ...productData,
         image: fullPath,
         clerkId: user.id,
+      },
+    });
+
+    // Create variant
+    const color = formData.get("color") as string;
+    const stock = Number(formData.get("stock"));
+
+    await db.productVariant.create({
+      data: {
+        productId: product.id,
+        color: color as Color,
+        size: size as Size,
+        stock,
       },
     });
   } catch (error) {
@@ -155,6 +168,9 @@ export const fetchAdminProductDetails = async (productId: string) => {
   const product = await db.product.findUnique({
     where: {
       id: productId,
+    },
+    include: {
+      variants: true,
     },
   });
   if (!product) redirect("/admin/products");
@@ -429,7 +445,11 @@ const fetchProduct = async (productId: string) => {
 const includeProductClause = {
   cartItems: {
     include: {
-      product: true,
+      variant: {
+        include: {
+          product: true,
+        },
+      },
     },
   },
 };
@@ -465,21 +485,18 @@ export const fetchOrCreateCart = async ({
 };
 
 const updateOrCreateCartItem = async ({
-  productId,
+  variantId,
   cartId,
   amount,
-  size,
 }: {
-  productId: string;
+  variantId: string;
   cartId: string;
   amount: number;
-  size: string;
 }) => {
   let cartItem = await db.cartItem.findFirst({
     where: {
-      productId,
+      variantId,
       cartId,
-      size: size as Size,
     },
   });
 
@@ -494,7 +511,7 @@ const updateOrCreateCartItem = async ({
     });
   } else {
     cartItem = await db.cartItem.create({
-      data: { amount, productId, cartId, size: size as Size },
+      data: { amount, variantId, cartId },
     });
   }
 };
@@ -505,7 +522,11 @@ export const updateCart = async (cart: Cart) => {
       cartId: cart.id,
     },
     include: {
-      product: true, // Include the related product
+      variant: {
+        include: {
+          product: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "asc",
@@ -517,7 +538,7 @@ export const updateCart = async (cart: Cart) => {
 
   for (const item of cartItems) {
     numItemsInCart += item.amount;
-    cartTotal += item.amount * item.product.price;
+    cartTotal += item.amount * item.variant.product.price;
   }
   const tax = cart.taxRate * cartTotal;
   const shipping = cartTotal ? cart.shipping : 0;
@@ -544,10 +565,25 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
   try {
     const productId = formData.get("productId") as string;
     const amount = Number(formData.get("amount"));
+    const color = formData.get("color") as string;
     const size = formData.get("size") as string;
     await fetchProduct(productId);
+    const variant = await db.productVariant.findFirst({
+      where: {
+        productId,
+        color: color as Color,
+        size: size as Size,
+      },
+    });
+    if (!variant) {
+      throw new Error("Variant not found");
+    }
     const cart = await fetchOrCreateCart({ userId: user.id });
-    await updateOrCreateCartItem({ productId, cartId: cart.id, amount, size });
+    await updateOrCreateCartItem({
+      variantId: variant.id,
+      cartId: cart.id,
+      amount,
+    });
     await updateCart(cart);
   } catch (error) {
     return renderError(error);
@@ -670,4 +706,69 @@ export const fetchAdminOrders = async () => {
     },
   });
   return orders;
+};
+
+export const updateVariantAction = async (
+  prevState: any,
+  formData: FormData
+) => {
+  await getAdminUser();
+  const variantId = formData.get("id") as string;
+  const color = formData.get("color") as string;
+  const size = formData.get("size") as string;
+  const stock = Number(formData.get("stock"));
+  try {
+    await db.productVariant.update({
+      where: {
+        id: variantId,
+      },
+      data: {
+        color: color as Color,
+        size: size as Size,
+        stock,
+      },
+    });
+    revalidatePath("/admin/products");
+    return { message: "Variant updated successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const deleteVariantAction = async (formData: FormData) => {
+  await getAdminUser();
+  const variantId = formData.get("variantId") as string;
+  try {
+    await db.productVariant.delete({
+      where: {
+        id: variantId,
+      },
+    });
+    revalidatePath("/admin/products");
+    return { message: "Variant deleted successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const addVariantAction = async (prevState: any, formData: FormData) => {
+  await getAdminUser();
+  const productId = formData.get("productId") as string;
+  const color = formData.get("color") as string;
+  const size = formData.get("size") as string;
+  const stock = Number(formData.get("stock"));
+  try {
+    await db.productVariant.create({
+      data: {
+        productId,
+        color: color as Color,
+        size: size as Size,
+        stock,
+      },
+    });
+    revalidatePath("/admin/products");
+    return { message: "Variant added successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
 };

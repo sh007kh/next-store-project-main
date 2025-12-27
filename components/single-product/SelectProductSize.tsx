@@ -17,22 +17,32 @@ const sizes = [
 type SelectProductSizeProps = {
   size: string;
   setSize: (value: string) => void;
+  availableSizes?: string[];
 };
 
-function SelectProductSize({ size, setSize }: SelectProductSizeProps) {
+function SelectProductSize({
+  size,
+  setSize,
+  availableSizes,
+}: SelectProductSizeProps) {
   return (
     <>
       <h4 className="mb-2">Size : </h4>
-      <Select defaultValue={size} onValueChange={setSize}>
+      <Select value={size} onValueChange={setSize}>
         <SelectTrigger className="w-[150px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {sizes.map((sizeOption) => (
-            <SelectItem key={sizeOption.value} value={sizeOption.value}>
-              {sizeOption.label}
-            </SelectItem>
-          ))}
+          {sizes
+            .filter(
+              (sizeOption) =>
+                !availableSizes || availableSizes.includes(sizeOption.value)
+            )
+            .map((sizeOption) => (
+              <SelectItem key={sizeOption.value} value={sizeOption.value}>
+                {sizeOption.label}
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
     </>

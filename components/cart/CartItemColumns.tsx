@@ -26,27 +26,45 @@ export const SecondColumn = ({
   company,
   productId,
   size,
+  color,
 }: {
   name: string;
   company: string;
   productId: string;
   size: string;
+  color: string;
 }) => {
   const sizeLabels = {
     SMALL: "Small",
-    MEDIUM: "Medium", 
+    MEDIUM: "Medium",
     LARGE: "Large",
     XLARGE: "X Large",
-    XXLARGE: "2XL"
+    XXLARGE: "2XL",
   };
-  
+
+  const colorLabels = {
+    RED: "Red",
+    BLUE: "Blue",
+    GREEN: "Green",
+    BLACK: "Black",
+    WHITE: "White",
+    YELLOW: "Yellow",
+    PURPLE: "Purple",
+    ORANGE: "Orange",
+    PINK: "Pink",
+    GRAY: "Gray",
+  };
+
   return (
     <div className=" sm:w-48">
       <Link href={`/products/${productId}`}>
         <h3 className="capitalize font-medium hover:underline">{name}</h3>
       </Link>
       <h4 className="mt-2 capitalize text-xs">{company}</h4>
-      <p className="mt-1 text-xs text-muted-foreground">Size: {sizeLabels[size as keyof typeof sizeLabels]}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Color: {colorLabels[color as keyof typeof colorLabels]}, Size:{" "}
+        {sizeLabels[size as keyof typeof sizeLabels]}
+      </p>
     </div>
   );
 };

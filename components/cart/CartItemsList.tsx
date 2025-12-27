@@ -7,15 +7,22 @@ function CartItemsList({ cartItems }: { cartItems: CartItemWithProduct[] }) {
   return (
     <div>
       {cartItems.map((cartItem) => {
-        const { id, amount, size } = cartItem;
-        const { id: productId, image, name, company, price } = cartItem.product;
+        const { id, amount } = cartItem;
+        const { color, size, product } = cartItem.variant;
+        const { id: productId, image, name, company, price } = product;
         return (
           <Card
             key={id}
             className="flex flex-col gap-y-4 md:flex-row flex-wrap p-6 mb-8 gap-x-4"
           >
             <FirstColumn image={image} name={name} />
-            <SecondColumn name={name} company={company} productId={productId} size={size} />
+            <SecondColumn
+              name={name}
+              company={company}
+              productId={productId}
+              size={size}
+              color={color}
+            />
             <ThirdColumn id={id} quantity={amount} />
             <FourthColumn price={price} />
           </Card>

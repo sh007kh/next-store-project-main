@@ -6,8 +6,11 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/943150/pexels-photo-943150.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 100,
-    "size": "MEDIUM",
-    "clerkId": "clerkId"
+    "clerkId": "clerkId",
+    "variants": [
+      { "color": "BLACK", "size": "MEDIUM", "stock": 10 },
+      { "color": "WHITE", "size": "MEDIUM", "stock": 5 }
+    ]
   },
   {
     "name": "chic chair",
@@ -16,8 +19,11 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/5705090/pexels-photo-5705090.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 200,
-    "size": "LARGE",
-    "clerkId": "clerkId"
+    "clerkId": "clerkId",
+    "variants": [
+      { "color": "RED", "size": "LARGE", "stock": 8 },
+      { "color": "BLUE", "size": "LARGE", "stock": 12 }
+    ]
   },
   {
     "name": "comfy bed",
@@ -26,8 +32,11 @@
     "featured": true,
     "image": "https://images.pexels.com/photos/1034584/pexels-photo-1034584.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 300,
-    "size": "XLARGE",
-    "clerkId": "clerkId"
+    "clerkId": "clerkId",
+    "variants": [
+      { "color": "GREEN", "size": "XLARGE", "stock": 3 },
+      { "color": "BLACK", "size": "XLARGE", "stock": 7 }
+    ]
   },
   {
     "name": "contemporary sofa",
@@ -36,7 +45,10 @@
     "featured": false,
     "image": "https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?auto=compress&cs=tinysrgb&w=1600",
     "price": 400,
-    "size": "SMALL",
-    "clerkId": "clerkId"
+    "clerkId": "clerkId",
+    "variants": [
+      { "color": "WHITE", "size": "SMALL", "stock": 15 },
+      { "color": "GRAY", "size": "SMALL", "stock": 9 }
+    ]
   }
 ]

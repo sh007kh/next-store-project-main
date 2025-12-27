@@ -15,6 +15,7 @@ type SelectProductAmountProps = {
   mode: Mode.SingleProduct;
   amount: number;
   setAmount: (value: number) => void;
+  stock: number;
 };
 
 type SelectCartItemAmountProps = {
@@ -30,6 +31,9 @@ function SelectProductAmount(
   const { mode, amount, setAmount } = props;
 
   const cartItem = mode === Mode.CartItem;
+  const maxAmount = cartItem
+    ? amount + 10
+    : (props as SelectProductAmountProps).stock;
 
   return (
     <>
@@ -43,7 +47,7 @@ function SelectProductAmount(
           <SelectValue placeholder={amount} />
         </SelectTrigger>
         <SelectContent>
-          {Array.from({ length: cartItem ? amount + 10 : 10 }, (_, index) => {
+          {Array.from({ length: maxAmount }, (_, index) => {
             const selectValue = (index + 1).toString();
             return (
               <SelectItem key={index} value={selectValue}>

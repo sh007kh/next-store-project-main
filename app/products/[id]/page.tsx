@@ -16,7 +16,8 @@ async function SingleProductPage({
 }) {
   const { id } = await params;
   const product = await fetchSingleProduct(id);
-  const { name, image, company, description, price } = product;
+  const { name, image, company, description, price, variants } = product;
+  const filteredVariants = variants.filter((variant) => variant.stock > 0);
   const dollarsAmount = formatCurrency(price);
   const { userId } = await auth();
   const reviewDoesNotExist =
@@ -53,7 +54,7 @@ async function SingleProductPage({
             {dollarsAmount}
           </p>
           <p className="mt-6 leading-8 text-muted-foreground">{description}</p>
-          <AddToCart productId={id} />
+          <AddToCart productId={id} variants={filteredVariants} />
         </div>
       </div>
       <ProductReviews productId={id} />

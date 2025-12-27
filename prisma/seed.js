@@ -5,10 +5,19 @@ const products = require("./products.json");
 const prisma = new PrismaClient();
 
 async function main() {
-  for (const product of products) {
-    await prisma.product.create({
-      data: product,
+  for (const productData of products) {
+    const { variants, ...productFields } = productData;
+    const product = await prisma.product.create({
+      data: productFields,
     });
+    for (const variant of variants) {
+      await prisma.productVariant.create({
+        data: {
+          ...variant,
+          productId: product.id,
+        },
+      });
+    }
   }
 }
 main()
