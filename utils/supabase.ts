@@ -3,12 +3,17 @@ import { createClient } from "@supabase/supabase-js";
 const bucket = "main-bucket";
 
 // Create a single supabase client for interacting with your database
-export const supabase = createClient(
-  process.env.SUPABASE_URL as string,
-  process.env.SUPABASE_KEY as string
-);
+const createSupabaseClient = () => {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_KEY;
+  if (!url || !key) {
+    throw new Error("Supabase environment variables are not set");
+  }
+  return createClient(url, key);
+};
 
 export const uploadImage = async (image: File) => {
+  const supabase = createSupabaseClient();
   const timestamp = Date.now();
   // const newName = `/users/${timestamp}-${image.name}`;
   const newName = `${timestamp}-${image.name}`;
@@ -23,6 +28,7 @@ export const uploadImage = async (image: File) => {
 };
 
 export const deleteImage = (url: string) => {
+  const supabase = createSupabaseClient();
   const imageName = url.split("/").pop();
   if (!imageName) throw new Error("Invalid URL");
   return supabase.storage.from(bucket).remove([imageName]);
