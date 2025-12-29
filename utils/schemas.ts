@@ -15,6 +15,8 @@ export const productSchema = z.object({
     message: "price must be a positive number.",
   }),
   size: z.enum(["SMALL", "MEDIUM", "LARGE", "XLARGE", "XXLARGE"]),
+  categoryId: z.string().optional(),
+  subcategoryId: z.string().optional(),
   description: z.string().refine(
     (description) => {
       const wordCount = description.split(" ").length;
@@ -80,4 +82,31 @@ export const reviewSchema = z.object({
     .string()
     .min(10, { message: "Comment must be at least 10 characters long" })
     .max(1000, { message: "Comment must be at most 1000 characters long" }),
+});
+
+export const categorySchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: "name must be at least 2 characters.",
+    })
+    .max(50, {
+      message: "name must be less than 50 characters.",
+    }),
+  description: z.string().optional(),
+});
+
+export const subcategorySchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: "name must be at least 2 characters.",
+    })
+    .max(50, {
+      message: "name must be less than 50 characters.",
+    }),
+  description: z.string().optional(),
+  categoryId: z.string().refine((value) => value !== "", {
+    message: "Category ID cannot be empty",
+  }),
 });

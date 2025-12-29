@@ -10,6 +10,7 @@ import CheckboxInput from "@/components/form/CheckBoxInput";
 import ColorInput from "@/components/form/ColorInput";
 import StockInput from "@/components/form/StockInput";
 import SizeInput from "@/components/form/SizeInput";
+import CategorySelect from "@/components/form/CategorySelect";
 
 function CreateProduct() {
   const name = faker.commerce.productName();
@@ -39,6 +40,7 @@ function CreateProduct() {
             <ColorInput />
             <SizeInput />
             <StockInput />
+            <CategorySelect name="categoryId" label="category" />
             <ImageInput />
           </div>
           <TextAreaInput

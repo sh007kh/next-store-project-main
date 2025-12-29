@@ -28,21 +28,55 @@ enum Color {
   GRAY
 }
 
+model Category {
+   id           String     @id @default(uuid())
+   name        String     @unique
+   description String?
+   createdAt    DateTime   @default(now())
+   updatedAt    DateTime   @updatedAt
+   products Product[]
+   subcategories Subcategory[]
+   }
+
+model Subcategory {
+   id           String     @id @default(uuid())
+   name        String
+   description String?
+   categoryId  String
+   category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+   createdAt    DateTime   @default(now())
+   updatedAt    DateTime   @updatedAt
+   products Product[]
+   }
+
 model Product {
-  id           String     @id @default(uuid())
-  name        String
-  company     String
-  description String
-  featured   Boolean
-  image       String
-  price       Int
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  clerkId  String
-  favorites Favorite[]
-  reviews Review []
-  variants ProductVariant[]
-  }
+   id           String     @id @default(uuid())
+   name        String
+   company     String
+   description String
+   featured   Boolean
+   price       Int
+   createdAt    DateTime   @default(now())
+   updatedAt    DateTime   @updatedAt
+   clerkId  String
+   categoryId  String?
+   category    Category?  @relation(fields: [categoryId], references: [id])
+   subcategoryId String?
+   subcategory Subcategory? @relation(fields: [subcategoryId], references: [id])
+   favorites Favorite[]
+   reviews Review []
+   variants ProductVariant[]
+   images ProductImage[]
+   }
+
+model ProductImage {
+   id        String  @id @default(uuid())
+   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+   productId String
+   imageUrl  String
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+   }
 
 model ProductVariant {
   id        String  @id @default(uuid())
