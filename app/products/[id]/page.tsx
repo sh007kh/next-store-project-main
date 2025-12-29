@@ -17,15 +17,28 @@ async function SingleProductPage({
 }) {
   const { id } = await params;
   const product = await fetchSingleProduct(id);
-  const { name, images, company, description, price, variants } = product;
+  const {
+    name,
+    images,
+    company,
+    description,
+    price,
+    variants,
+    category,
+    subcategory,
+  } = product;
   const filteredVariants = variants.filter((variant) => variant.stock > 0);
   const dollarsAmount = formatCurrency(price);
   const { userId } = await auth();
   const reviewDoesNotExist =
     userId && !(await findExistingReview(userId, product.id));
 
+  const categoryName = category?.name || subcategory?.name || "Uncategorized";
+
   return (
     <section>
+      {/* Hidden category tag for SEO */}
+      <meta name="category" content={categoryName} />
       <BreadCrumbs name={product.name} />
       <div className="mt-6 grid gap-y-8 lg:grid-cols-2 lg:gap-x-16">
         {/* IMAGE FIRST COL */}

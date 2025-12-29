@@ -4,6 +4,7 @@ import DarkMode from "./DarkMode";
 import LinkDropdown from "./LinkDropdown";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
+import CategoriesNav from "./CategoriesNav";
 import { Suspense } from "react";
 function Navbar() {
   return (
@@ -15,6 +16,7 @@ function Navbar() {
           <NavSearch />
         </Suspense>
         <div className="flex gap-4 items-center">
+          <CategoriesNav />
           <CartButton />
           <DarkMode />
           <LinkDropdown />

@@ -7,6 +7,8 @@ import {
   imageSchema,
   productSchema,
   reviewSchema,
+  categorySchema,
+  subcategorySchema,
   validateWithZodSchema,
 } from "./schemas";
 import { deleteImage, uploadImage } from "./supabase";
@@ -63,6 +65,8 @@ export const fetchAllProducts = async ({
   color = "",
   priceMin = "",
   priceMax = "",
+  category = "",
+  subcategory = "",
   sort = "createdAt-desc",
 }: {
   search?: string;
@@ -71,6 +75,8 @@ export const fetchAllProducts = async ({
   color?: string;
   priceMin?: string;
   priceMax?: string;
+  category?: string;
+  subcategory?: string;
   sort?: string;
 }) => {
   const where: any = {
@@ -96,6 +102,14 @@ export const fetchAllProducts = async ({
 
   if (priceMax) {
     where.AND.push({ price: { lte: parseInt(priceMax) } });
+  }
+
+  if (category) {
+    where.AND.push({ categoryId: category });
+  }
+
+  if (subcategory) {
+    where.AND.push({ subcategoryId: subcategory });
   }
 
   if (size || color) {
@@ -138,6 +152,8 @@ export const fetchSingleProduct = async (productId: string) => {
     include: {
       variants: true,
       images: true,
+      category: true,
+      subcategory: true,
     },
   });
   if (!product) {
@@ -212,12 +228,15 @@ export const createProductAction = async (
       validatedFiles.map((vf) => uploadImage(vf.data!.image))
     );
 
-    const { size, ...productData } = validatedFields.data!;
+    const { size, categoryId, subcategoryId, ...productData } =
+      validatedFields.data!;
 
     const product = await db.product.create({
       data: {
         ...productData,
         clerkId: user.id,
+        categoryId: categoryId || null,
+        subcategoryId: subcategoryId || null,
       },
     });
 
@@ -881,6 +900,120 @@ export const addVariantAction = async (prevState: any, formData: FormData) => {
     });
     revalidatePath("/admin/products");
     return { message: "Variant added successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const fetchAdminCategories = async () => {
+  await getAdminUser();
+  const categories = await db.category.findMany({
+    include: {
+      subcategories: {
+        include: {
+          products: true,
+        },
+      },
+      products: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return categories;
+};
+
+export const fetchCategories = async () => {
+  const categories = await db.category.findMany({
+    include: {
+      subcategories: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return categories;
+};
+
+export const createCategoryAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  await getAdminUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(categorySchema, rawData);
+    if (!validatedFields.success) {
+      const errors = validatedFields.error!.issues.map(
+        (error) => error.message
+      );
+      throw new Error(errors.join(", "));
+    }
+    await db.category.create({
+      data: validatedFields.data!,
+    });
+    revalidatePath("/admin/categories");
+    return { message: "Category created successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const deleteCategoryAction = async (prevState: {
+  categoryId: string;
+}) => {
+  const { categoryId } = prevState;
+  await getAdminUser();
+  try {
+    await db.category.delete({
+      where: {
+        id: categoryId,
+      },
+    });
+    revalidatePath("/admin/categories");
+    return { message: "Category removed" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const createSubcategoryAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  await getAdminUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(subcategorySchema, rawData);
+    if (!validatedFields.success) {
+      const errors = validatedFields.error!.issues.map(
+        (error) => error.message
+      );
+      throw new Error(errors.join(", "));
+    }
+    await db.subcategory.create({
+      data: validatedFields.data!,
+    });
+    revalidatePath("/admin/categories");
+    return { message: "Subcategory created successfully" };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const deleteSubcategoryAction = async (prevState: {
+  subcategoryId: string;
+}) => {
+  const { subcategoryId } = prevState;
+  await getAdminUser();
+  try {
+    await db.subcategory.delete({
+      where: {
+        id: subcategoryId,
+      },
+    });
+    revalidatePath("/admin/categories");
+    return { message: "Subcategory removed" };
   } catch (error) {
     return renderError(error);
   }
