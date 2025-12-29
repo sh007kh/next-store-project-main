@@ -19,21 +19,114 @@ export const fetchFeaturedProducts = async () => {
     where: {
       featured: true,
     },
+    include: {
+      images: true,
+    },
   });
   return products;
 };
 
-export const fetchAllProducts = async ({ search = "" }: { search: string }) => {
-  return db.product.findMany({
-    where: {
+export const fetchDistinctCompanies = async () => {
+  const companies = await db.product.findMany({
+    select: {
+      company: true,
+    },
+    distinct: ["company"],
+  });
+  return companies.map((c) => c.company);
+};
+
+export const fetchDistinctSizes = async () => {
+  const sizes = await db.productVariant.findMany({
+    select: {
+      size: true,
+    },
+    distinct: ["size"],
+  });
+  return sizes.map((s) => s.size);
+};
+
+export const fetchDistinctColors = async () => {
+  const colors = await db.productVariant.findMany({
+    select: {
+      color: true,
+    },
+    distinct: ["color"],
+  });
+  return colors.map((c) => c.color);
+};
+
+export const fetchAllProducts = async ({
+  search = "",
+  company = "",
+  size = "",
+  color = "",
+  priceMin = "",
+  priceMax = "",
+  sort = "createdAt-desc",
+}: {
+  search?: string;
+  company?: string;
+  size?: string;
+  color?: string;
+  priceMin?: string;
+  priceMax?: string;
+  sort?: string;
+}) => {
+  const where: any = {
+    AND: [],
+  };
+
+  if (search) {
+    where.AND.push({
       OR: [
         { name: { contains: search, mode: "insensitive" } },
         { company: { contains: search, mode: "insensitive" } },
       ],
+    });
+  }
+
+  if (company) {
+    where.AND.push({ company: { equals: company, mode: "insensitive" } });
+  }
+
+  if (priceMin) {
+    where.AND.push({ price: { gte: parseInt(priceMin) } });
+  }
+
+  if (priceMax) {
+    where.AND.push({ price: { lte: parseInt(priceMax) } });
+  }
+
+  if (size || color) {
+    const variantWhere: any = {};
+    if (size) {
+      variantWhere.size = size as any;
+    }
+    if (color) {
+      variantWhere.color = color as any;
+    }
+    where.AND.push({
+      variants: {
+        some: variantWhere,
+      },
+    });
+  }
+
+  let orderBy: any = { createdAt: "desc" };
+  if (sort === "price-asc") {
+    orderBy = { price: "asc" };
+  } else if (sort === "price-desc") {
+    orderBy = { price: "desc" };
+  }
+
+  return db.product.findMany({
+    where,
+    include: {
+      variants: true,
+      images: true,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy,
   });
 };
 
@@ -44,6 +137,7 @@ export const fetchSingleProduct = async (productId: string) => {
     },
     include: {
       variants: true,
+      images: true,
     },
   });
   if (!product) {
@@ -89,10 +183,9 @@ export const createProductAction = async (
 
   try {
     const rawData = Object.fromEntries(formData);
-    const file = formData.get("image") as File;
+    const files = formData.getAll("image") as File[];
 
     const validatedFields = validateWithZodSchema(productSchema, rawData);
-    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
 
     if (!validatedFields.success) {
       const errors = validatedFields.error!.issues.map(
@@ -101,21 +194,39 @@ export const createProductAction = async (
       throw new Error(errors.join(", "));
     }
 
-    if (!validatedFile.success) {
-      const errors = validatedFile.error!.issues.map((error) => error.message);
-      throw new Error(errors.join(", "));
+    // Validate all images
+    const validatedFiles = await Promise.all(
+      files.map((file) => validateWithZodSchema(imageSchema, { image: file }))
+    );
+
+    for (const validatedFile of validatedFiles) {
+      if (!validatedFile.success) {
+        const errors = validatedFile.error!.issues.map(
+          (error) => error.message
+        );
+        throw new Error(errors.join(", "));
+      }
     }
 
-    const fullPath = await uploadImage(validatedFile.data!.image);
+    const uploadedImages = await Promise.all(
+      validatedFiles.map((vf) => uploadImage(vf.data!.image))
+    );
 
     const { size, ...productData } = validatedFields.data!;
 
     const product = await db.product.create({
       data: {
         ...productData,
-        image: fullPath,
         clerkId: user.id,
       },
+    });
+
+    // Create image records
+    await db.productImage.createMany({
+      data: uploadedImages.map((url) => ({
+        productId: product.id,
+        imageUrl: url,
+      })),
     });
 
     // Create variant
@@ -143,11 +254,11 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
   try {
     const product = await db.product.findUnique({
       where: { id: productId },
-      select: { image: true },
+      include: { images: true },
     });
 
-    if (product?.image) {
-      await deleteImage(product.image);
+    if (product?.images) {
+      await Promise.all(product.images.map((img) => deleteImage(img.imageUrl)));
     }
 
     await db.product.delete({
@@ -171,6 +282,7 @@ export const fetchAdminProductDetails = async (productId: string) => {
     },
     include: {
       variants: true,
+      images: true,
     },
   });
   if (!product) redirect("/admin/products");
@@ -185,7 +297,6 @@ export const updateProductImageAction = async (
   try {
     const image = formData.get("image") as File;
     const productId = formData.get("id") as string;
-    const oldImageUrl = formData.get("url") as string;
 
     const validatedFile = validateWithZodSchema(imageSchema, { image });
 
@@ -195,17 +306,14 @@ export const updateProductImageAction = async (
     }
 
     const fullPath = await uploadImage(validatedFile.data!.image);
-    await deleteImage(oldImageUrl);
-    await db.product.update({
-      where: {
-        id: productId,
-      },
+    await db.productImage.create({
       data: {
-        image: fullPath,
+        productId,
+        imageUrl: fullPath,
       },
     });
     revalidatePath(`/admin/products/${productId}/edit`);
-    return { message: "Product Image updated successfully" };
+    return { message: "Product Image added successfully" };
   } catch (error) {
     return renderError(error);
   }
@@ -360,8 +468,13 @@ export const fetchProductReviewsByUser = async () => {
       comment: true,
       product: {
         select: {
-          image: true,
           name: true,
+          images: {
+            select: {
+              imageUrl: true,
+            },
+            take: 1,
+          },
         },
       },
     },

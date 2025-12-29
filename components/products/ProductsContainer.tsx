@@ -1,5 +1,6 @@
 import ProductsGrid from "./ProductsGrid";
 import ProductsList from "./ProductsList";
+import ProductsFilters from "./ProductsFilters";
 import { LuLayoutGrid, LuList } from "react-icons/lu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,13 +10,40 @@ import Link from "next/link";
 async function ProductsContainer({
   layout,
   search,
+  company,
+  size,
+  color,
+  priceMin,
+  priceMax,
+  sort,
 }: {
   layout: string;
   search: string;
+  company: string;
+  size: string;
+  color: string;
+  priceMin: string;
+  priceMax: string;
+  sort: string;
 }) {
-  const products = await fetchAllProducts({ search });
+  const products = await fetchAllProducts({
+    search,
+    company,
+    size,
+    color,
+    priceMin,
+    priceMax,
+    sort,
+  });
   const totalProducts = products.length;
   const searchTerm = search ? `&search=${search}` : "";
+  const companyTerm = company ? `&company=${company}` : "";
+  const sizeTerm = size ? `&size=${size}` : "";
+  const colorTerm = color ? `&color=${color}` : "";
+  const priceMinTerm = priceMin ? `&priceMin=${priceMin}` : "";
+  const priceMaxTerm = priceMax ? `&priceMax=${priceMax}` : "";
+  const sortTerm = sort !== "createdAt-desc" ? `&sort=${sort}` : "";
+  const queryString = `${searchTerm}${companyTerm}${sizeTerm}${colorTerm}${priceMinTerm}${priceMaxTerm}${sortTerm}`;
   return (
     <>
       {/* HEADER */}
@@ -30,7 +58,7 @@ async function ProductsContainer({
               size="icon"
               asChild
             >
-              <Link href={`/products?layout=grid${searchTerm}`}>
+              <Link href={`/products?layout=grid${queryString}`}>
                 <LuLayoutGrid />
               </Link>
             </Button>
@@ -39,13 +67,17 @@ async function ProductsContainer({
               size="icon"
               asChild
             >
-              <Link href={`/products?layout=list${searchTerm}`}>
+              <Link href={`/products?layout=list${queryString}`}>
                 <LuList />
               </Link>
             </Button>
           </div>
         </div>
         <Separator className="mt-4" />
+      </section>
+      {/* FILTERS */}
+      <section className="mb-8">
+        <ProductsFilters />
       </section>
       {/* PRODUCTS */}
       <div>
