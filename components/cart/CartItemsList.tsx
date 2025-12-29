@@ -9,7 +9,8 @@ function CartItemsList({ cartItems }: { cartItems: CartItemWithProduct[] }) {
       {cartItems.map((cartItem) => {
         const { id, amount } = cartItem;
         const { color, size, product } = cartItem.variant;
-        const { id: productId, image, name, company, price } = product;
+        const { id: productId, images, name, company, price } = product;
+        const image = images[0]?.imageUrl || "";
         return (
           <Card
             key={id}

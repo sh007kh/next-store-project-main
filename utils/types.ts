@@ -24,5 +24,5 @@ export type CartState = {
 import { Prisma } from "@prisma/client";
 
 export type CartItemWithProduct = Prisma.CartItemGetPayload<{
-  include: { variant: { include: { product: true } } };
+  include: { variant: { include: { product: { include: { images: true } } } } };
 }>;
