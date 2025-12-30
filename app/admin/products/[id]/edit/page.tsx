@@ -79,8 +79,8 @@ async function EditProductPage({
       <div className="border p-8 rounded-md mt-8">
         <h2 className="text-xl font-semibold mb-4">Product Variants</h2>
         {product.variants
-          .filter((variant) => variant.stock > 0)
-          .map((variant) => (
+          .filter((variant: any) => variant.stock > 0)
+          .map((variant: any) => (
             <div key={variant.id} className="border p-4 mb-4 rounded">
               <FormContainer action={updateVariantAction}>
                 <input type="hidden" name="id" value={variant.id} />
