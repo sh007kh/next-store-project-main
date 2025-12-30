@@ -78,7 +78,7 @@ async function CategoriesPage() {
         <Table>
           <TableCaption className="capitalize">
             total subcategories :{" "}
-            {categories.flatMap((cat) => cat.subcategories).length}
+            {categories.flatMap((cat: any) => cat.subcategories).length}
           </TableCaption>
           <TableHeader>
             <TableRow>
