@@ -4,7 +4,7 @@ import { formatCurrency } from "@/utils/format";
 import { createOrderAction } from "@/utils/actions";
 import FormContainer from "../form/FormContainer";
 import { SubmitButton } from "../form/Buttons";
-import { Cart } from "@prisma/client";
+import { Cart } from "@/generated/prisma/client";
 
 function CartTotals({ cart }: { cart: Cart }) {
   const { cartTotal, shipping, tax, orderTotal } = cart;

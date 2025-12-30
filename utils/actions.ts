@@ -14,7 +14,7 @@ import {
 import { deleteImage, uploadImage } from "./supabase";
 import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
-import { Cart, Size, Color } from "@prisma/client";
+import { Cart, Size, Color } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
 
 export const fetchFeaturedProducts = async () => {
