@@ -579,7 +579,11 @@ const includeProductClause = {
     include: {
       variant: {
         include: {
-          product: true,
+          product: {
+            include: {
+              images: true,
+            },
+          },
         },
       },
     },
@@ -656,7 +660,11 @@ export const updateCart = async (cart: Cart) => {
     include: {
       variant: {
         include: {
-          product: true,
+          product: {
+            include: {
+              images: true,
+            },
+          },
         },
       },
     },
