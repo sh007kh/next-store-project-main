@@ -4,7 +4,11 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Container from "@/components/global/Container";
 import Providers from "./Providers";
-import { ClerkProvider } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
+const ClerkProvider = dynamic(
+  () => import("@clerk/nextjs").then((mod) => ({ default: mod.ClerkProvider })),
+  { ssr: false }
+);
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
