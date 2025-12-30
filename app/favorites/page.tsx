@@ -1,6 +1,7 @@
 import { fetchUserFavorites } from "@/utils/actions";
 import SectionTitle from "@/components/global/SectionTitle";
 import ProductsGrid from "@/components/products/ProductsGrid";
+import { FavoriteGetPayload } from "@/generated/prisma/models/Favorite";
 
 async function FavoritesPage() {
   const favorites = await fetchUserFavorites();
@@ -9,7 +10,12 @@ async function FavoritesPage() {
   return (
     <div>
       <SectionTitle text="Favorites" />
-      <ProductsGrid products={favorites.map((favorite) => favorite.product)} />
+      <ProductsGrid
+        products={favorites.map(
+          (favorite: FavoriteGetPayload<{ include: { product: true } }>) =>
+            favorite.product
+        )}
+      />
     </div>
   );
 }
