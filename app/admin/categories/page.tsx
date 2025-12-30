@@ -72,7 +72,7 @@ async function CategoriesPage() {
 
       {/* Subcategories Section */}
       <h2 className="text-xl font-semibold mt-12 mb-4">Subcategories</h2>
-      {categories.flatMap((cat) => cat.subcategories).length === 0 ? (
+      {categories.flatMap((cat: any) => cat.subcategories).length === 0 ? (
         <EmptyList />
       ) : (
         <Table>
@@ -90,8 +90,8 @@ async function CategoriesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.flatMap((cat) =>
-              cat.subcategories.map((sub) => (
+            {categories.flatMap((cat: any) =>
+              cat.subcategories.map((sub: any) => (
                 <TableRow key={sub.id}>
                   <TableCell className="font-medium">{sub.name}</TableCell>
                   <TableCell>{sub.description || "No description"}</TableCell>
