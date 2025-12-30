@@ -9,6 +9,7 @@ import ProductReviews from "@/components/reviews/ProductReviews";
 import ImageCarousel from "@/components/single-product/ImageCarousel";
 import { fetchSingleProduct, findExistingReview } from "@/utils/actions";
 import { auth } from "@clerk/nextjs/server";
+import { ProductVariantModel } from "@/generated/prisma/models/ProductVariant";
 
 async function SingleProductPage({
   params,
@@ -27,7 +28,9 @@ async function SingleProductPage({
     category,
     subcategory,
   } = product;
-  const filteredVariants = variants.filter((variant) => variant.stock > 0);
+  const filteredVariants = variants.filter(
+    (variant: ProductVariantModel) => variant.stock > 0
+  );
   const dollarsAmount = formatCurrency(price);
   const { userId } = await auth();
   const reviewDoesNotExist =
