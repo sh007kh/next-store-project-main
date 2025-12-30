@@ -15,6 +15,7 @@ import { deleteImage, uploadImage } from "./supabase";
 import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
 import { Cart, Size, Color } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
 export const fetchFeaturedProducts = async () => {
   const products = await db.product.findMany({
@@ -79,7 +80,7 @@ export const fetchAllProducts = async ({
   subcategory?: string;
   sort?: string;
 }) => {
-  const where: any = {
+  const where: { AND: Prisma.ProductWhereInput[] } = {
     AND: [],
   };
 
@@ -113,12 +114,12 @@ export const fetchAllProducts = async ({
   }
 
   if (size || color) {
-    const variantWhere: any = {};
+    const variantWhere: Prisma.ProductVariantWhereInput = {};
     if (size) {
-      variantWhere.size = size as any;
+      variantWhere.size = size as Size;
     }
     if (color) {
-      variantWhere.color = color as any;
+      variantWhere.color = color as Color;
     }
     where.AND.push({
       variants: {
@@ -127,7 +128,7 @@ export const fetchAllProducts = async ({
     });
   }
 
-  let orderBy: any = { createdAt: "desc" };
+  let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: "desc" };
   if (sort === "price-asc") {
     orderBy = { price: "asc" };
   } else if (sort === "price-desc") {
@@ -192,7 +193,7 @@ const renderError = (error: unknown): { message: string } => {
   };
 };
 export const createProductAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ): Promise<{ message: string }> => {
   const user = await getAuthUser();
@@ -309,7 +310,7 @@ export const fetchAdminProductDetails = async (productId: string) => {
 };
 
 export const updateProductImageAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ) => {
   await getAuthUser();
@@ -339,7 +340,7 @@ export const updateProductImageAction = async (
 };
 
 export const updateProductAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ) => {
   await getAdminUser();
@@ -428,7 +429,7 @@ export const fetchUserFavorites = async () => {
 };
 
 export const createReviewAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ) => {
   const user = await getAuthUser();
@@ -700,7 +701,10 @@ export const updateCart = async (cart: Cart) => {
   return { currentCart, cartItems };
 };
 
-export const addToCartAction = async (prevState: any, formData: FormData) => {
+export const addToCartAction = async (
+  prevState: unknown,
+  formData: FormData
+) => {
   const user = await getAuthUser();
   try {
     const productId = formData.get("productId") as string;
@@ -732,7 +736,7 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
 };
 
 export const removeCartItemAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ) => {
   const user = await getAuthUser();
@@ -787,7 +791,10 @@ export const updateCartItemAction = async ({
   }
 };
 
-export const createOrderAction = async (prevState: any, formData: FormData) => {
+export const createOrderAction = async (
+  prevState: unknown,
+  formData: FormData
+) => {
   const user = await getAuthUser();
   let orderId: null | string = null;
   let cartId: null | string = null;
@@ -849,7 +856,7 @@ export const fetchAdminOrders = async () => {
 };
 
 export const updateVariantAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ) => {
   await getAdminUser();
@@ -875,7 +882,10 @@ export const updateVariantAction = async (
   }
 };
 
-export const deleteVariantAction = async (formData: FormData) => {
+export const deleteVariantAction = async (
+  prevState: { message: string },
+  formData: FormData
+) => {
   await getAdminUser();
   const variantId = formData.get("variantId") as string;
   try {
@@ -891,7 +901,10 @@ export const deleteVariantAction = async (formData: FormData) => {
   }
 };
 
-export const addVariantAction = async (prevState: any, formData: FormData) => {
+export const addVariantAction = async (
+  prevState: unknown,
+  formData: FormData
+) => {
   await getAdminUser();
   const productId = formData.get("productId") as string;
   const color = formData.get("color") as string;
@@ -944,7 +957,7 @@ export const fetchCategories = async () => {
 };
 
 export const createCategoryAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ): Promise<{ message: string }> => {
   await getAdminUser();
@@ -986,7 +999,7 @@ export const deleteCategoryAction = async (prevState: {
 };
 
 export const createSubcategoryAction = async (
-  prevState: any,
+  prevState: unknown,
   formData: FormData
 ): Promise<{ message: string }> => {
   await getAdminUser();
