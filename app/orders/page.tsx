@@ -11,6 +11,7 @@ import {
 import SectionTitle from "@/components/global/SectionTitle";
 import { fetchUserOrders } from "@/utils/actions";
 import { formatCurrency, formatDate } from "@/utils/format";
+import { OrderModel } from "@/generated/prisma/models/Order";
 async function OrdersPage() {
   const orders = await fetchUserOrders();
 
@@ -30,7 +31,7 @@ async function OrdersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => {
+            {orders.map((order: OrderModel) => {
               const { id, products, orderTotal, tax, shipping, createdAt } =
                 order;
 
