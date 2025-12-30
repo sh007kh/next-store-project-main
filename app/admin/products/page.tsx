@@ -34,7 +34,7 @@ async function ItemsPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item) => {
+          {items.map((item: any) => {
             const { id: productId, name, company, price } = item;
             return (
               <TableRow key={productId}>
