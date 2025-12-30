@@ -8,7 +8,9 @@
     "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "npx prisma db push --url=\"postgresql://postgres.emakiinvvsjnmuydrwxo:LmiyA3YoPY1kxMmZ@aws-0-us-east-2.pooler.supabase.com:5432/postgres\""
+    "db:push": "npx prisma db push --url=\"postgresql://postgres.emakiinvvsjnmuydrwxo:LmiyA3YoPY1kxMmZ@aws-0-us-east-2.pooler.supabase.com:5432/postgres\"",
+    "db:test": "tsx scripts/test-database.ts",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
