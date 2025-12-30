@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npx prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "npx prisma generate",
     "db:push": "npx prisma db push --url=\"postgresql://postgres.emakiinvvsjnmuydrwxo:LmiyA3YoPY1kxMmZ@aws-0-us-east-2.pooler.supabase.com:5432/postgres\""
   },
   "dependencies": {
