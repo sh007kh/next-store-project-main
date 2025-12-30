@@ -42,7 +42,7 @@ async function CategoriesPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories.map((category) => {
+          {categories.map((category: any) => {
             const {
               id: categoryId,
               name,
