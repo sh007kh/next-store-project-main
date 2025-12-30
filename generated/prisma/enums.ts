@@ -9,7 +9,28 @@
 * 🟢 You can import this file directly.
 */
 
+export const Size = {
+  SMALL: 'SMALL',
+  MEDIUM: 'MEDIUM',
+  LARGE: 'LARGE',
+  XLARGE: 'XLARGE',
+  XXLARGE: 'XXLARGE'
+} as const
+
+export type Size = (typeof Size)[keyof typeof Size]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const Color = {
+  RED: 'RED',
+  BLUE: 'BLUE',
+  GREEN: 'GREEN',
+  BLACK: 'BLACK',
+  WHITE: 'WHITE',
+  YELLOW: 'YELLOW',
+  PURPLE: 'PURPLE',
+  ORANGE: 'ORANGE',
+  PINK: 'PINK',
+  GRAY: 'GRAY'
+} as const
+
+export type Color = (typeof Color)[keyof typeof Color]

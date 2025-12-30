@@ -8,7 +8,11 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Category.js'
+export type * from './models/Subcategory.js'
 export type * from './models/Product.js'
+export type * from './models/ProductImage.js'
+export type * from './models/ProductVariant.js'
 export type * from './models/Favorite.js'
 export type * from './models/Review.js'
 export type * from './models/Cart.js'
