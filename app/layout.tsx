@@ -5,12 +5,11 @@ import Navbar from "@/components/navbar/Navbar";
 import Container from "@/components/global/Container";
 import Providers from "./Providers";
 import { ClerkProvider } from "@clerk/nextjs";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Awesome Next Store",
-  description: "An amateur Next framework to be better",
+  title: "Next Storefront",
+  description: "A nifty store built with Next.js",
 };
 
 export default function RootLayout({
@@ -18,20 +17,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-  if (!publishableKey) {
-    return (
-      <html lang="en">
-        <body className={inter.className}>
-          <div>Application is loading...</div>
-        </body>
-      </html>
-    );
-  }
-
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <Providers>

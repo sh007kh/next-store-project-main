@@ -11,7 +11,7 @@
     "db:push": "npx prisma db push --url=\"postgresql://postgres.emakiinvvsjnmuydrwxo:LmiyA3YoPY1kxMmZ@aws-0-us-east-2.pooler.supabase.com:5432/postgres\""
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.31.8",
+    "@clerk/nextjs": "^6.36.5",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/adapter-ppg": "^7.2.0",
     "@prisma/client": "^7.2.0",
