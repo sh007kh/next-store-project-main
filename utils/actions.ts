@@ -14,8 +14,8 @@ import {
 import { deleteImage, uploadImage } from "./supabase";
 import { toast } from "sonner";
 import { revalidatePath } from "next/cache";
-import { Cart, Size, Color } from "@/generated/prisma/client";
-import { Prisma } from "@/generated/prisma/client";
+import { Cart, Size, Color } from "../app/generated/prisma/client";
+import { Prisma } from "../app/generated/prisma/client";
 
 export const fetchFeaturedProducts = async () => {
   const products = await db.product.findMany({
