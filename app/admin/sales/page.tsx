@@ -10,6 +10,7 @@ import {
 
 import { fetchAdminOrders } from "@/utils/actions";
 import { formatCurrency, formatDate } from "@/utils/format";
+import { OrderModel } from "@/generated/prisma/models/Order";
 async function SalesPage() {
   const orders = await fetchAdminOrders();
 
@@ -28,7 +29,7 @@ async function SalesPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.map((order) => {
+          {orders.map((order: OrderModel) => {
             const {
               id,
               products,
