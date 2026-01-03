@@ -24,6 +24,7 @@ function ReviewCard({ reviewInfo, children }: ReviewCardProps) {
             width={48}
             height={48}
             className="w-12 h-12 rounded-full object-cover"
+            unoptimized={true}
           />
           <div className="ml-4">
             <h3 className="text-sm font-bold capitalize mb-1">

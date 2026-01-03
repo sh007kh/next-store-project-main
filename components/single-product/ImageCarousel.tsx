@@ -46,6 +46,7 @@ function ImageCarousel({ images, name }: ImageCarouselProps) {
                   sizes="(max-width:768px) 100vw,(max-width:1200px) 50vw,33vw"
                   priority={index === 0}
                   className="w-full rounded-md object-cover"
+                  unoptimized={true}
                 />
               </div>
             </CarouselItem>
@@ -73,6 +74,7 @@ function ImageCarousel({ images, name }: ImageCarouselProps) {
               width={64}
               height={64}
               className="w-full h-full object-cover"
+              unoptimized={true}
             />
           </button>
         ))}
