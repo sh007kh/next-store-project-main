@@ -1,7 +1,7 @@
 import "dotenv/config";
 // const { PrismaClient } = require("@prisma/client");
-import { PrismaClient } from "../generated/prisma/client";
-const products = require("./products.json");
+import { PrismaClient } from "@prisma/client";
+import products from "./products.json" with { type: "json" };
 const prisma = new PrismaClient();
 
 async function main() {
