@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { prisma } from "../lib/prisma.ts";
+import prisma from "../lib/prisma.ts";
 import fs from "fs";
 const products = JSON.parse(fs.readFileSync("./prisma/products.json", "utf8"));
 
